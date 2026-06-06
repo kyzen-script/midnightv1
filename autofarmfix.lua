@@ -620,7 +620,7 @@ frameStroke.Color = Color3.fromRGB(44,44,50); frameStroke.Thickness = 1.5
 
 local titleLabel = Instance.new("TextLabel")
 titleLabel.Size = UDim2.new(1,-90,0,30); titleLabel.Position = UDim2.new(0,12,0,10)
-titleLabel.BackgroundTransparency = 1; titleLabel.Text = "Zyzo's Auto Mechanics"
+titleLabel.BackgroundTransparency = 1; titleLabel.Text = "Kyzen Auto Mechanics"
 titleLabel.TextColor3 = Color3.fromRGB(255,255,255); titleLabel.TextSize = 20
 titleLabel.Font = Enum.Font.GothamBold; titleLabel.TextXAlignment = Enum.TextXAlignment.Left
 titleLabel.Parent = guiFrame
