@@ -17,7 +17,7 @@ local GROUP_ID = 35799601
 local REQUIRED_RANK = 1
 local SHIRT_ID = 382538059
 local SHIRT_LINK = "https://www.roblox.com/catalog/382538059/Green-Jersey"
-local DISCORD_LINK = ""
+local DISCORD_LINK = "https://discord.gg/XEaCRUNS2"
 local WEBHOOK_URL = ""
 local SAVE_FILE = "Kyzen.json"
 
