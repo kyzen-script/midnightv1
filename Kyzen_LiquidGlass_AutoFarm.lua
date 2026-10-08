@@ -1178,8 +1178,7 @@ UserInputService.InputChanged:Connect(function(input)
 end)
 
 --// Đổi tên biến này nếu ScreenGui UI chính của m tên khác
-local MainUI = game:GetService("CoreGui"):FindFirstChild("KyzenLiquidGlass")
-
+local MainUI = player.PlayerGui:FindFirstChild("KyzenLiquidGlass")
 local opened = true
 local clickStart
 
