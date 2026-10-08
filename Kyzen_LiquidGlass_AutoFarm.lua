@@ -1096,118 +1096,176 @@ game:GetService("UserInputService").InputChanged:Connect(function(input)
 	end
 end)
 ------Phần UI
---// FLOATING LOGO OPEN / CLOSE UI
+--// =========================================================
+--// KYZEN HUB - LIQUID GLASS TOGGLE LOGO
+--// =========================================================
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local PlayerGui = player:WaitForChild("PlayerGui")
+
+--// Tìm UI chính
+local MainUI = PlayerGui:WaitForChild("KyzenLiquidGlass")
+
+--// Xóa logo cũ nếu script chạy lại
+local OldToggle = PlayerGui:FindFirstChild("KyzenToggleLogo")
+if OldToggle then
+    OldToggle:Destroy()
+end
+
+--// Tạo ScreenGui riêng cho Logo
 local ToggleGui = Instance.new("ScreenGui")
 ToggleGui.Name = "KyzenToggleLogo"
 ToggleGui.ResetOnSpawn = false
 ToggleGui.IgnoreGuiInset = true
+ToggleGui.DisplayOrder = 60000
 ToggleGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ToggleGui.Parent = PlayerGui
 
-pcall(function()
-    if syn and syn.protect_gui then
-        syn.protect_gui(ToggleGui)
-    end
-end)
-
-ToggleGui.Parent = game:GetService("CoreGui")
-
+--// Logo
 local ToggleButton = Instance.new("ImageButton")
-ToggleButton.Name = "ToggleLogo"
-ToggleButton.Size = UDim2.new(0, 52, 0, 52)
-ToggleButton.Position = UDim2.new(0, 18, 0.5, -26)
-ToggleButton.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+ToggleButton.Name = "ToggleButton"
+ToggleButton.Size = UDim2.new(0, 54, 0, 54)
+ToggleButton.Position = UDim2.new(0, 18, 0.5, -27)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(20, 20, 24)
 ToggleButton.BackgroundTransparency = 0.08
 ToggleButton.BorderSizePixel = 0
 ToggleButton.Image = "rbxassetid://6031091004"
 ToggleButton.ScaleType = Enum.ScaleType.Fit
-ToggleButton.ZIndex = 9999
+ToggleButton.AutoButtonColor = false
+ToggleButton.ZIndex = 100
 ToggleButton.Parent = ToggleGui
 
-local LogoCorner = Instance.new("UICorner")
-LogoCorner.CornerRadius = UDim.new(1, 0)
-LogoCorner.Parent = ToggleButton
+--// Bo tròn
+local Corner = Instance.new("UICorner")
+Corner.CornerRadius = UDim.new(1, 0)
+Corner.Parent = ToggleButton
 
-local LogoStroke = Instance.new("UIStroke")
-LogoStroke.Color = Color3.fromRGB(120, 170, 255)
-LogoStroke.Thickness = 2
-LogoStroke.Transparency = 0.15
-LogoStroke.Parent = ToggleButton
+--// Viền
+local Stroke = Instance.new("UIStroke")
+Stroke.Thickness = 1.5
+Stroke.Transparency = 0.25
+Stroke.Parent = ToggleButton
 
---// Kéo logo
+--// Hiệu ứng bóng nhẹ
+local Shadow = Instance.new("ImageLabel")
+Shadow.Name = "Shadow"
+Shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+Shadow.Position = UDim2.new(0.5, 0, 0.5, 3)
+Shadow.Size = UDim2.new(1, 12, 1, 12)
+Shadow.BackgroundTransparency = 1
+Shadow.Image = "rbxassetid://5028857084"
+Shadow.ImageTransparency = 0.55
+Shadow.ScaleType = Enum.ScaleType.Slice
+Shadow.SliceCenter = Rect.new(24, 24, 276, 276)
+Shadow.ZIndex = 0
+Shadow.Parent = ToggleButton
+
+--// =========================================================
+--// KÉO LOGO
+--// =========================================================
+
 local dragging = false
 local dragStart
-local startPos
+local startPosition
 
 ToggleButton.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1
-    or input.UserInputType == Enum.UserInputType.Touch then
+        or input.UserInputType == Enum.UserInputType.Touch then
 
         dragging = true
         dragStart = input.Position
-        startPos = ToggleButton.Position
-
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
+        startPosition = ToggleButton.Position
     end
 end)
 
 ToggleButton.InputChanged:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseMovement
-    or input.UserInputType == Enum.UserInputType.Touch then
-        -- handled below
+        or input.UserInputType == Enum.UserInputType.Touch then
+
+        -- lưu input để xử lý kéo
     end
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if dragging and (
-        input.UserInputType == Enum.UserInputType.MouseMovement
-        or input.UserInputType == Enum.UserInputType.Touch
-    ) then
+    if not dragging then
+        return
+    end
+
+    if input.UserInputType == Enum.UserInputType.MouseMovement
+        or input.UserInputType == Enum.UserInputType.Touch then
+
         local delta = input.Position - dragStart
 
         ToggleButton.Position = UDim2.new(
-            startPos.X.Scale,
-            startPos.X.Offset + delta.X,
-            startPos.Y.Scale,
-            startPos.Y.Offset + delta.Y
+            startPosition.X.Scale,
+            startPosition.X.Offset + delta.X,
+            startPosition.Y.Scale,
+            startPosition.Y.Offset + delta.Y
         )
     end
 end)
 
---// Đổi tên biến này nếu ScreenGui UI chính của m tên khác
-local MainUI = player.PlayerGui:FindFirstChild("KyzenLiquidGlass")
-local opened = true
-local clickStart
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+        or input.UserInputType == Enum.UserInputType.Touch then
 
-ToggleButton.MouseButton1Down:Connect(function()
-    clickStart = tick()
+        dragging = false
+    end
 end)
 
+--// =========================================================
+--// BẤM LOGO -> ẨN / HIỆN UI
+--// =========================================================
+
 ToggleButton.MouseButton1Click:Connect(function()
-    -- tránh click khi vừa kéo
-    if clickStart and tick() - clickStart > 0.25 then
+
+    -- UI chính vẫn là KyzenLiquidGlass
+    if not MainUI or not MainUI.Parent then
+        MainUI = PlayerGui:FindFirstChild("KyzenLiquidGlass")
+    end
+
+    if not MainUI then
+        warn("KyzenLiquidGlass không tồn tại!")
         return
     end
 
-    opened = not opened
-
-    if MainUI then
-        MainUI.Enabled = opened
-    end
-
-    TweenService:Create(
+    -- Animation logo
+    local shrink = TweenService:Create(
         ToggleButton,
-        TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        TweenInfo.new(
+            0.08,
+            Enum.EasingStyle.Quad,
+            Enum.EasingDirection.Out
+        ),
         {
-            Size = UDim2.new(
-                0,
-                opened and 52 or 48,
-                0,
-                opened and 52 or 48
-            )
+            Size = UDim2.new(0, 47, 0, 47)
         }
-    ):Play()
+    )
+
+    local expand = TweenService:Create(
+        ToggleButton,
+        TweenInfo.new(
+            0.12,
+            Enum.EasingStyle.Back,
+            Enum.EasingDirection.Out
+        ),
+        {
+            Size = UDim2.new(0, 54, 0, 54)
+        }
+    )
+
+    shrink:Play()
+
+    shrink.Completed:Connect(function()
+        expand:Play()
+    end)
+
+    --// Ẩn / hiện UI chính
+    MainUI.Enabled = not MainUI.Enabled
 end)
+
+print("✅ Kyzen Toggle Logo loaded")
